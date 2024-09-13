@@ -113,12 +113,37 @@ class EditCredentials extends Authentication {
   }
 }
 
+class Product {
+  String? name;
+  double? price;
+  int? quantity;
+  List<Product> products = [];
+
+  void addProduct(String name, double price, int quantity) {
+    Product product = new Product();
+    product.name = name;
+    product.price = price;
+    product.quantity = quantity;
+
+    products.add(product);
+  }
+
+  void viewProduct() {
+    print("Product list");
+    print("Product Name\t\tProduct Price\t\tProduct Quantity");
+    for (Product product in products) {
+      print("${product.name}\t\t${product.price}\t\t${product.quantity}");
+    }
+  }
+}
+
 void main() {
   String? city;
   String? barangay;
   // Use EditCredentials for both registration and editing
   EditCredentials editcredentials = new EditCredentials();
   //I did not create an object of the Authentication class since it was inherited by EditCredentials class.
+  Product product = new Product();
 
   print("Welcome to Nestler's Restaurant!");
 
@@ -195,7 +220,10 @@ void main() {
                 print("MAIN CONTROLLER");
                 print("1.) Show credentials");
                 print("2.) Edit credentials");
-                print("3.) Logout");
+                print("3.) Add Product");
+                print("4.) View Product");
+                print("5.) Delete Product");
+                print("6.) Logout");
                 print("Your choice: ");
                 int app_choice = int.parse(stdin.readLineSync()!);
 
@@ -285,6 +313,7 @@ void main() {
                         }
 
                         break;
+
                       case 5:
                         print("Enter new City: ");
                         String new_city = stdin.readLineSync()!;
@@ -335,6 +364,80 @@ void main() {
                     }
                     break;
                   case 3:
+                    bool isProductNotAdded = true;
+
+                    while (isProductNotAdded) {
+                      print("Enter product name: ");
+                      String product_name = stdin.readLineSync()!;
+                      print("Enter product price: ");
+                      double product_price =
+                          double.parse(stdin.readLineSync()!);
+                      print("Enter product quantity: ");
+                      int product_quantity = int.parse(stdin.readLineSync()!);
+
+                      if (product_name == '0') {
+                        print(
+                            "'Product name '0' is a command, Please enter another product name.");
+                        continue;
+                      } else if (product_name != "" &&
+                          product_price != "" &&
+                          product_quantity != "") {
+                        product.addProduct(
+                            product_name, product_price, product_quantity);
+
+                        isProductNotAdded = false;
+                      } else {
+                        print("Please specify needed product information");
+                      }
+                    }
+                    print("Product added successfully");
+
+                    break;
+                  case 4:
+                    product.viewProduct();
+                    break;
+                  case 5:
+                    if (product.products.isEmpty) {
+                      print(
+                          "There are currently no products inside the product list.");
+                      print(
+                          "Enter '3' in the MAIN CONTROLLER to add product in the product list.");
+                    } else {
+                      bool isProductNotDeleted = true;
+                      String cancel_delete = '0';
+                      while (isProductNotDeleted) {
+                        print(
+                            "Enter the name of the product you want to delete: You can press '0' to cancel product deletion");
+                        String product_name = stdin.readLineSync()!;
+
+                        if (product_name == cancel_delete) {
+                          isProductNotDeleted = false;
+                          continue;
+                        }
+
+                        if (product_name.isNotEmpty) {
+                          // Check if the product exists in the list
+                          bool productExists = product.products
+                              .any((element) => element.name == product_name);
+
+                          if (productExists) {
+                            product.products.removeWhere(
+                                (element) => element.name == product_name);
+                            print(
+                                "Product '$product_name' deleted successfully.");
+                            isProductNotDeleted = false;
+                          } else {
+                            print("There is no product named '$product_name'.");
+                          }
+                        } else {
+                          print(
+                              "Please enter the name of the product you want to delete.");
+                        }
+                      }
+                    }
+                    break;
+
+                  case 6:
                     print("Successfully logged out");
                     isAppOpen = false;
                     break;
