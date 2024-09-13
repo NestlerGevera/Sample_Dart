@@ -84,7 +84,7 @@ class EditCredentials extends Authentication {
   bool editAddress(String new_city, String new_barangay) {
     if (this.address != null) {
       this.address!["city"] = new_city;
-      this.address!["address"] = new_barangay;
+      this.address!["barangay"] = new_barangay;
 
       return true;
     } else {
