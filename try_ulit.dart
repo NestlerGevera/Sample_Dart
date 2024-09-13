@@ -69,6 +69,7 @@ void main() {
           print("4.) Exit POS");
           print("Your choice: ");
           int posChoice = int.parse(stdin.readLineSync()!);
+          print(posChoice);
         } else {
           print(response["status"]);
         }
